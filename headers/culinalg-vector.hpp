@@ -2,7 +2,7 @@
  * Class and methods for representing a large dimensional vector.
  */
 
-#ifdef CULINALG_HEADER_VECTOR
+#ifndef CULINALG_HEADER_VECTOR
 #define CULINALG_HEADER_VECTOR
 
 namespace clg
@@ -10,20 +10,23 @@ namespace clg
     /*
      * Forward declaration of CuObject
      */
-    struct CuObject;
+    template<class T> struct CuObject;
+
+    // TODO add double precision support
     /**
      * A very large dimensional vector with operators overloaded for vector addition.
      */
-    class Vector
+    class Vector                                    
     {
         private:
-            CuObject* irepr_;
+            CuObject<float>* irepr_;
+            size_t dim_;
 
         public:
             /**
-             * Construct a 0 vector
+             * Construct a 0 vector of dimensionality n.
              */
-            Vector();
+            Vector(size_t n);
             /*
              * Copy and move constructors
              */
