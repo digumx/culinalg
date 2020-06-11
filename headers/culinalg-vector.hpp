@@ -18,10 +18,6 @@ namespace clg
      */
     class Vector                                    
     {
-        private:
-            CuObject<float>* irepr_;
-            size_t dim_;
-
         public:
             /**
              * Construct a 0 vector of dimensionality n.
@@ -45,6 +41,10 @@ namespace clg
              * Compound operator for vector addition
              */
             Vector operator+=(const Vector& other);
+        
+        private:
+            CuObject<float>* irepr;
+            size_t dim;
     };
 
     /**

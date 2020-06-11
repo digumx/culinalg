@@ -7,6 +7,7 @@
 #define CULINALG_HEADER_CUHEADER
 
 #include<queue>
+#include<string>
 
 namespace clg
 {
@@ -19,7 +20,7 @@ namespace clg
     struct CuObject
     {
         /*
-         * Pointers to data for host and device. Should iether be null, or refer to valid memory
+         * Pointers to data for host and device. Should iether be nullptr, or refer to valid memory
          */
         T* host_data; 
         T* device_data;
@@ -38,6 +39,29 @@ namespace clg
      * any exception guarantee, and is intended to simply be syntactic sugar for the often repeated
      * if-throw pattern for wrapping CudaErrors in exceptions.
      */
+    template<class E> inline void wrapCudaError(const CudaError_t& err)
+    {
+        if(err != cudaSuccess)
+            throw E("CUDA Error: " + std::string(cudaGetErrorName(err)) + ": " +
+                    std::string(cudaGetErrorString(err)));
+    }
+
+    /**
+     * A thin wrapper class for CudaEvent_t.
+     */
+    class CuEvent
+    {
+        public:
+            /**
+             * Constructs a new cuda event, calls cudaEventCreate()
+             */
+            CuEvent() { cudaEventCreate(&event); }
+            /**
+             * Destroys an event, calls 
+
+        private:
+            CudaEvent_t event;
+    };
 }
 
 #endif

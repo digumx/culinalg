@@ -33,4 +33,4 @@ build/*
 tags
 
 # Vimsession
-.vimsession
+.vimsession*

@@ -6,6 +6,7 @@
 #define CULINALG_HEADER_EXCEPTIONS
 
 #include <stdexcept>
+#include <string>
 
 namespace clg
 {
@@ -16,8 +17,10 @@ namespace clg
      */
     class AllocationFailedException : std::runtime_error
     {
-        explicit AllocationFailedException (const char* str) : std::runtime_error(str) {}
-        explicit AllocationFailedException (const std::string& str) : std::runtime_error(str) {}
+        explicit AllocationFailedException (const char* str) : 
+            std::runtime_error(("Allocation Failed: " + std::string(str)).c_str()) {}
+        explicit AllocationFailedException (const std::string& str) : 
+            std::runtime_error("Allocation Failed:" + str) {}
     };
     /**
      * A class representing an AllocationFailedException occuring when trying to allocate host
@@ -26,9 +29,9 @@ namespace clg
     class HostAllocationFailedException : AllocationFailedException
     {
         explicit HostAllocationFailedException (const char* str) : 
-            AllocationFailedException(str) {}
+            AllocationFailedException(("Host Allocation Failed: " + std::string(str)).c_str()) {}
         explicit HostAllocationFailedException (const std::string& str) : 
-            AllocationFailedException(str) {}
+            AllocationFailedException("Host Allocation Failed:" + str) {}
     };
     /**
      * A class representing an AllocationFailedException occuring when trying to allocate device
@@ -37,12 +40,12 @@ namespace clg
     class DeviceAllocationFailedException : AllocationFailedException
     {
         explicit DeviceAllocationFailedException (const char* str) : 
-            AllocationFailedException(str) {}
+            AllocationFailedException(("Device Allocation Failed: " + std::string(str)).c_str()) {}
         explicit DeviceAllocationFailedException (const std::string& str) : 
-            AllocationFailedException(str) {}
+            AllocationFailedException("Device Allocation Failed:" + str) {}
     };
 
-    // SEE ALSO: template<T> void wrapCudaError(CudaError_t) in 
+    // SEE ALSO: wrapCudaError() in culinalg-cuheader.cuh
 }
 
 #endif
