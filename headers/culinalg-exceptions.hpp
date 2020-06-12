@@ -54,7 +54,11 @@ namespace clg
      */
     class DimensionalityMismatchException : public std::logic_error
     {
-        explicit DimensionalityMismatchException(int dim_a, int dim_b) :
+        /**
+         * The following constructor is used to create a new DimensionalityMismatchException to
+         * report mismatch in dimensions when working with two vectors.
+         */
+        DimensionalityMismatchException(int dim_a, int dim_b) :
             logic_error("Dimensionality Mismatch: Attempting to operate on vectors of dimensions " +
                     std::to_string(dim_a) + " and " + std::to_string(dim_b)) {}
     }
