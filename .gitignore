@@ -34,3 +34,6 @@ tags
 
 # Vimsession
 .vimsession*
+
+# Commit message file
+.commit-message

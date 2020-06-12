@@ -37,14 +37,6 @@ clg::Vector::~Vector()
     delete irepr_;
 }
 
-void clg::copyVector(const Vector& dst, const Vector& src)
-{
-    // Check dimensionality.
-    if(dim_ != other.dim_) throw DimensionalityMismatchException(this->dim_, other.dim_);
-    
-    // Copy cases based on mem sync situation and record error
-    }
-
 clg::Vector::Vector(const Vector& other) : dim_(other.dim_)
 {
     // Ensure valid state for this->irepr_
