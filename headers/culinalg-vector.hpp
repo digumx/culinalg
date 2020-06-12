@@ -38,6 +38,10 @@ namespace clg
             Vector operator=(const Vector& other);
             Vector operator=(Vector&& other);
             /**
+             * Friend function to copy vectors
+             */
+            friend void copyVector(const Vector& dst, const Vector& src);
+            /**
              * Friend function for vector addition
              */
             friend Vector operator+(const Vector& x, const Vector& y);
@@ -47,14 +51,21 @@ namespace clg
             Vector operator+=(const Vector& other);
         
         private:
-            CuObject<float>* irepr;
-            size_t dim;
+            CuObject<float>* irepr_;
+            size_t dim_;
     };
 
     /**
-     * Adds two vectors together. Friend to Vector
+     * Adds two vectors together. Friend to Vector.
+     * @param x The left argument
+     * @param y The right argument
      */
     Vector operator+(const Vector& x, const Vector& y);
+
+    /**
+     * Copies vector data from second argument into first.
+     */
+    void copyVector(const Vector& dst, const Vector& src);
 }
 
 #endif

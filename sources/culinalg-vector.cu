@@ -7,35 +7,34 @@
 
 #include<sources/culinalg-cuheader.cuh>
 
-clg::Vector::Vector(size_t n) : dim(n)
+clg::Vector::Vector(size_t n) : dim_(n)
 {
     // Make new CuObject
-    irepr = new CuObject();
+    irepr_ = new CuObject();
 
-    // Set irepr_ to valid temp state
-    irepr->host_data = nullptr;
-    irepr->device_data = nullptr;
+    // Set irepr__ to valid temp state
+    irepr_->host_data = nullptr;
+    irepr_->device_data = nullptr;
 
     // Try to allocate
-    float* h_data, d_data;
-    clg::wrapCudaError<clg::HostAllocationFailedException>(cudaMallocHost(&h_data, dim*sizeof(float)));
-    clg::wrapCudaError<clg::DeviceAllocationFailedException>(cudaMalloc(&d_data, dim*sizeof(float)));
+    float* _h_data, _d_data;
+    clg::wrapCudaError<clg::HostAllocationFailedException>(cudaMallocHost(&_h_data, dim_*sizeof(float)));
+    clg::wrapCudaError<clg::DeviceAllocationFailedException>(cudaMalloc(&_d_data, dim_*sizeof(float)));
 
     // Allocation passed
-    irepr->host_data = h_data;
-    irepr->device_data = h_data;
+    irepr_->host_data = _h_data;
+    irepr_->device_data = _d_data;
 }
 
 clg::Vector::~Vector()
 {
-    // Copy over refs and nullify them
-    float* h_data = irepr->host_data;
-    float* d_data = irepr->device_data;
-    irepr->host_data = nullptr;
-    irepr->device_data = nullptr;
-
-    // Free memory. Do not worry about exceptions, as this is a destructor and there isn't much we
-    // can do.
-    cudaFreeHost(h_data);
-    cudaFree(h_data);
+    cudaFreeHost(irepr_->host_data);
+    cudaFree(irepr_->device_data);
 }
+
+// TODO complete
+//clg::Vector::Vector(const Vector& other)
+//{
+//    // Check dimensionality.
+//    if(dim_ != other.dim_) throw DimensionalityMismatchException(this->dim_, other.dim_); 
+//}

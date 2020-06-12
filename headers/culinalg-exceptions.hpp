@@ -15,7 +15,7 @@ namespace clg
      * device side. Extended to define seperate exceptions for host and device memory allocation
      * errors.
      */
-    class AllocationFailedException : std::runtime_error
+    class AllocationFailedException : public std::runtime_error
     {
         explicit AllocationFailedException (const char* str) : 
             std::runtime_error(("Allocation Failed: " + std::string(str)).c_str()) {}
@@ -26,7 +26,7 @@ namespace clg
      * A class representing an AllocationFailedException occuring when trying to allocate host
      * memory
      */
-    class HostAllocationFailedException : AllocationFailedException
+    class HostAllocationFailedException : public AllocationFailedException
     {
         explicit HostAllocationFailedException (const char* str) : 
             AllocationFailedException(("Host Allocation Failed: " + std::string(str)).c_str()) {}
@@ -37,15 +37,27 @@ namespace clg
      * A class representing an AllocationFailedException occuring when trying to allocate device
      * memory
      */
-    class DeviceAllocationFailedException : AllocationFailedException
+    class DeviceAllocationFailedException : public AllocationFailedException
     {
         explicit DeviceAllocationFailedException (const char* str) : 
             AllocationFailedException(("Device Allocation Failed: " + std::string(str)).c_str()) {}
         explicit DeviceAllocationFailedException (const std::string& str) : 
             AllocationFailedException("Device Allocation Failed:" + str) {}
     };
-
     // SEE ALSO: wrapCudaError() in culinalg-cuheader.cuh
+
+    /**
+     * A class representing an error that occurs when dimensionality of operands in a binary
+     * operation do not properly match. This is thrown, for example, when adding two vectors of
+     * different dimensionalities or multiplying matrices where the number of columns of the left
+     * matrix does not match the number of rows of the right matrix.
+     */
+    class DimensionalityMismatchException : public std::logic_error
+    {
+        explicit DimensionalityMismatchException(int dim_a, int dim_b) :
+            logic_error("Dimensionality Mismatch: Attempting to operate on vectors of dimensions " +
+                    std::to_string(dim_a) + " and " + std::to_string(dim_b)) {}
+    }
 }
 
 #endif
