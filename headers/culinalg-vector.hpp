@@ -23,21 +23,25 @@ namespace clg
              * Construct a 0 vector of dimensionality n.
              */
             Vector(size_t n);
-            /*
+            /**
+             * Destruct a vector
+             */
+            ~Vector();
+            /**
              * Copy and move constructors
              */
             Vector(const Vector& other);
             Vector(Vector&& other);
-            /*
+            /**
              * Copy and move assignment operators
              */
             Vector operator=(const Vector& other);
             Vector operator=(Vector&& other);
-            /*
+            /**
              * Friend function for vector addition
              */
             friend Vector operator+(const Vector& x, const Vector& y);
-            /*
+            /**
              * Compound operator for vector addition
              */
             Vector operator+=(const Vector& other);

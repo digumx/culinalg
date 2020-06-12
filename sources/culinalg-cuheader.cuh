@@ -28,8 +28,9 @@ namespace clg
          * Events reading to or writing from this object. Both cannot be nonempty, as reading to and
          * writing from the same object simultaneously should not happen
          */
-        std::queue<CudaEvent_t> reader_events;
-        CudaEvent_t writer_events;
+        // TODO Use for async
+        //std::queue<CudaEvent_t> reader_events;
+        //CudaEvent_t writer_events;
     };
 
     /**
@@ -49,19 +50,20 @@ namespace clg
     /**
      * A thin wrapper class for CudaEvent_t.
      */
-    class CuEvent
-    {
-        public:
-            /**
-             * Constructs a new cuda event, calls cudaEventCreate()
-             */
-            CuEvent() { cudaEventCreate(&event); }
-            /**
-             * Destroys an event, calls 
+    // TODO complete
+    //class CuEvent
+    //{
+    //    public:
+    //        /**
+    //         * Constructs a new cuda event, calls cudaEventCreate()
+    //         */
+    //        CuEvent() { cudaEventCreate(&event); }
+    //        /**
+    //         * Destroys an event, calls 
 
-        private:
-            CudaEvent_t event;
-    };
+    //    private:
+    //        CudaEvent_t event;
+    //};
 }
 
 #endif
