@@ -51,7 +51,7 @@ namespace clg
             Vector operator+=(const Vector& other);
         
         private:
-            CuObject<float>* irepr_;
+            CuObject* irepr_;
             size_t dim_;
     };
 
@@ -61,11 +61,6 @@ namespace clg
      * @param y The right argument
      */
     Vector operator+(const Vector& x, const Vector& y);
-
-    /**
-     * Copies vector data from second argument into first.
-     */
-    void copyVector(const Vector& dst, const Vector& src);
 }
 
 #endif

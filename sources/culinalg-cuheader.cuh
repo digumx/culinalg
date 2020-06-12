@@ -16,19 +16,24 @@ namespace clg
      * Used to store the data for vectors and matrices. Template parameter T is expected to be iether
      * float or double.
      */
-    template<class T>
     struct CuObject
     {
-        /*
+        /**
          * Pointers to data for host and device. Should iether be nullptr, or refer to valid memory
+         */ 
+        void* host_data; 
+        void* device_data;
+        /**
+         * The following flag is true if the host_data contains the correct data for the vector,
+         * otherwise the device_data contains the correct data.
          */
-        T* host_data; 
-        T* device_data;
-        /*
-         * Events reading to or writing from this object. Both cannot be nonempty, as reading to and
-         * writing from the same object simultaneously should not happen
-         */
+        bool host_data_synced;
+
         // TODO Use for async
+        ///**
+        // * Events reading to or writing from this object. Both cannot be nonempty, as reading to and
+        // * writing from the same object simultaneously should not happen
+        // */
         //std::queue<CudaEvent_t> reader_events;
         //CudaEvent_t writer_events;
     };
@@ -40,12 +45,14 @@ namespace clg
      * any exception guarantee, and is intended to simply be syntactic sugar for the often repeated
      * if-throw pattern for wrapping CudaErrors in exceptions.
      */
-    template<class E> inline void wrapCudaError(const CudaError_t& err)
-    {
-        if(err != cudaSuccess)
-            throw E("CUDA Error: " + std::string(cudaGetErrorName(err)) + ": " +
-                    std::string(cudaGetErrorString(err)));
-    }
+    template<class E> inline void wrapCudaError(const CudaError_t& err);
+
+    /**
+     * Copies data from the second CuObject arguement into the first.
+     */
+    void copyCuObject(const CuObject& dst, const CuObject& src);
+    
+
 
     /**
      * A thin wrapper class for CudaEvent_t.

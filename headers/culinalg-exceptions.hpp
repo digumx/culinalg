@@ -11,6 +11,17 @@
 namespace clg
 {
     /**
+     * This exception occurs when a copy between two CuObjects failed.
+     */
+    class CopyFailedException : public std::runtime_error
+    {
+        explicit CopyFailedException (const char* str) : 
+            std::runtime_error(("Copy Failed: " + std::string(str)).c_str()) {}
+        explicit CopyFailedException (const std::string& str) : 
+            std::runtime_error("Copy Failed:" + str) {}
+    };
+
+    /**
      * This exception occurs when memory could not be allocated, iether on the host side or on the
      * device side. Extended to define seperate exceptions for host and device memory allocation
      * errors.
@@ -54,9 +65,9 @@ namespace clg
      */
     class DimensionalityMismatchException : public std::logic_error
     {
-        /**
-         * The following constructor is used to create a new DimensionalityMismatchException to
-         * report mismatch in dimensions when working with two vectors.
+        /*
+         * The following constructor is used to create an exception reporting a dimensionality
+         * mismatch between two vectors in the what() message
          */
         DimensionalityMismatchException(int dim_a, int dim_b) :
             logic_error("Dimensionality Mismatch: Attempting to operate on vectors of dimensions " +
