@@ -3,6 +3,13 @@
 A CUDA linear algebra library written in C++. This is mainly a personal exploration of some parallel
 algorithms for common linear algebraic operations.
 
+## Build Flags
+
+The following build flags may be set:
+
+* `NOASSERT` bypasses sanity checks for conditions that should never happen which would have
+  triggered an assert.
+
 ## Styling
 
 The following code styling conventions should be followed:

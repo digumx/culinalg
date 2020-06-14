@@ -8,9 +8,9 @@
 namespace clg
 {
     /*
-     * Forward declaration of CuObject
+     * Forward declaration of CuData
      */
-    template<class T> struct CuObject;
+    template<class T> struct CuData;
 
     // TODO add double precision support
     /**
@@ -20,43 +20,56 @@ namespace clg
     {
         public:
             /**
-             * Construct a 0 vector of dimensionality n.
+             * Construct a 0 vector of dimensionality n. Strong exception guarantee.
              */
             Vector(size_t n);
             /**
-             * Destruct a vector
+             * Destruct a vector. Strong exception guarantee.
              */
             ~Vector();
             /**
-             * Copy and move constructors
+             * Copy constructor. Strong exception guarantee.
              */
             Vector(const Vector& other);
+            /**
+             * Move constructor. Strong exception guarantee.
+             */
             Vector(Vector&& other);
             /**
-             * Copy and move assignment operators
+             * Copy assignment operator. Strong exception guarantee.
              */
             Vector operator=(const Vector& other);
+            /**
+             * Move assignment operator. Strong exception guarantee.
+             */
             Vector operator=(Vector&& other);
             /**
-             * Friend function to copy vectors
-             */
-            friend void copyVector(const Vector& dst, const Vector& src);
-            /**
-             * Friend function for vector addition
+             * Friend function for vector addition.
              */
             friend Vector operator+(const Vector& x, const Vector& y);
             /**
-             * Compound operator for vector addition
+             * Compound operator for vector addition. Strong exception guarantee.
              */
             Vector operator+=(const Vector& other);
         
         private:
-            CuObject* irepr_;
-            size_t dim_;
+            // Must point to valid CuData at all times. The CuData should point to some data, unless
+            // recovering from a recent exception.
+            CuData* irepr_;
+            const size_t dim_;
+
+            // Attempt to allocate data in irepr_ if it does not point to any data. Throws exception
+            // on allocation failure. Strong exception guarantee. Assumes inviariants of CuData
+            // hold.
+            void alloc_irepr_throw_();
+            // Attempt to delete all data in irepr_, throw exceptions on failure. Should not be used
+            // in dtor. Strong exception guarantee.
+            void delloc_irepr_throw_();
+
     };
 
     /**
-     * Adds two vectors together. Friend to Vector.
+     * Adds two vectors together. Friend to Vector. Strong exception guarantee.
      * @param x The left argument
      * @param y The right argument
      */

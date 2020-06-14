@@ -16,10 +16,10 @@ namespace clg
      * Used to store the data for vectors and matrices. Template parameter T is expected to be iether
      * float or double.
      */
-    struct CuObject
+    struct CuData
     {
         /**
-         * Pointers to data for host and device. Should iether be nullptr, or refer to valid memory
+         * Pointers to data for host and device. Should either be both nullptr, or both refer to valid memory
          */ 
         void* host_data; 
         void* device_data;
@@ -43,14 +43,19 @@ namespace clg
      * of the passed template arguement type. Template arguement is expected to be a valid error
      * defined in headers/culinalg-exceptions.hpp. Note that this function itself does not provide
      * any exception guarantee, and is intended to simply be syntactic sugar for the often repeated
-     * if-throw pattern for wrapping CudaErrors in exceptions.
+     * if-throw-get-message pattern for wrapping CudaErrors in exceptions.
      */
     template<class E> inline void wrapCudaError(const CudaError_t& err);
 
     /**
-     * Copies data from the second CuObject arguement into the first.
+     * Copies data from the second CuData arguement into the first. Copies as many bytes as the 
+     * third arguement. Throws CopyFailedException, either due to internal CUDA errors, or because 
+     * the CuDatas do not poin to any data. Both source and destination CuDatas remain valid, that 
+     * is, they continue to point to some date mirrored on host and device, but a failed copy may 
+     * corrupt the data itself. This essentially provides strong exception guarantee with respect to
+     * CuData validity.
      */
-    void copyCuObject(const CuObject& dst, const CuObject& src);
+    void copyCuData(const CuData& dst, const CuData& src, size_t count);
     
 
 

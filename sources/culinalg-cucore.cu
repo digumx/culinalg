@@ -11,22 +11,27 @@ template<class E> inline void clg::wrapCudaError(const CudaError_t& err)
                 std::string(cudaGetErrorString(err)));
 }
 
-void clg::copyCuObject(const CuObject& dst, const CuObject& src)
+void clg::copyCuData(const CuData& dst, const CuData& src, size_t count)
 {
+    // Check that CuDatas point to valid data.
+    if(!dst.host_data || !src.host_data || !dst.device_data || !src.host_data)
+        throw clg::CopyFailedException("CuData is invalid or points to no data");
+
+    // Perform copy
     CudaError_t err; 
-    if(dst.irepr_->host_data_synced)
+    if(dst.host_data_synced)
     {
-        if(src.irepr_->host_data_synced)
-            err = cudaMemcpy(dst.irepr_->host_data, src.irepr_->host_data, cudaMemcpyHostToHost); //TODO bench
+        if(src.host_data_synced)
+            err = cudaMemcpy(dst.host_data, src.host_data, count, cudaMemcpyHostToHost); //TODO bench
         else
-            err = cudaMemcpy(dst.irepr_->host_data, src.irepr_->device_data, cudaMemcpyDeviceToHost);
+            err = cudaMemcpy(dst.host_data, src.device_data, count, cudaMemcpyDeviceToHost);
     }
     else
     {
-        if(src.irepr_->host_data_synced)
-            err = cudaMemcpy(dst.irepr_->device_data, src.irepr_->host_data, cudaMemcpyHostToDevice);        
-        else
-            err = cudaMemcpy(dst.irepr_->device_data, src.irepr_->device_data, cudaMemcpyDeviceToDevice);
+        if(src.host_data_synced)
+            err = cudaMemcpy(dst.device_data, src.host_data, count, cudaMemcpyHostToDevice);        
+        else    //TODO benc the following
+            err = cudaMemcpy(dst.device_data, src.device_data, count, cudaMemcpyDeviceToDevice);
     }
 
     // Check for error

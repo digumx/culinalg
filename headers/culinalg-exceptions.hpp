@@ -11,7 +11,7 @@
 namespace clg
 {
     /**
-     * This exception occurs when a copy between two CuObjects failed.
+     * This exception occurs when a copy between two CuDatas failed.
      */
     class CopyFailedException : public std::runtime_error
     {
@@ -19,6 +19,40 @@ namespace clg
             std::runtime_error(("Copy Failed: " + std::string(str)).c_str()) {}
         explicit CopyFailedException (const std::string& str) : 
             std::runtime_error("Copy Failed:" + str) {}
+    };
+    /**
+     * This exception occurs when memory could not be dellocated, iether on the host side or on the
+     * device side. Extended to define seperate exceptions for host and device memory allocation
+     * errors.
+     */
+    class DellocationFailedException : public std::runtime_error
+    {
+        explicit DellocationFailedException (const char* str) : 
+            std::runtime_error(("Dellocation Failed: " + std::string(str)).c_str()) {}
+        explicit DellocationFailedException (const std::string& str) : 
+            std::runtime_error("Dellocation Failed:" + str) {}
+    };
+    /**
+     * A class representing an DellocationFailedException occuring when trying to allocate host
+     * memory
+     */
+    class HostDellocationFailedException : public DellocationFailedException
+    {
+        explicit HostDellocationFailedException (const char* str) : 
+            DellocationFailedException(("Host Dellocation Failed: " + std::string(str)).c_str()) {}
+        explicit HostDellocationFailedException (const std::string& str) : 
+            DellocationFailedException("Host Dellocation Failed:" + str) {}
+    };
+    /**
+     * A class representing an DellocationFailedException occuring when trying to allocate device
+     * memory
+     */
+    class DeviceDellocationFailedException : public DellocationFailedException
+    {
+        explicit DeviceDellocationFailedException (const char* str) : 
+            DellocationFailedException(("Device Dellocation Failed: " + std::string(str)).c_str()) {}
+        explicit DeviceDellocationFailedException (const std::string& str) : 
+            DellocationFailedException("Device Dellocation Failed:" + str) {}
     };
 
     /**
