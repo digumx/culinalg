@@ -7,9 +7,6 @@ algorithms for common linear algebraic operations.
 
 The following build flags may be set:
 
-* `NOASSERT` bypasses sanity checks for conditions that should never happen which would have
-  triggered an assert.
-
 ## Styling
 
 The following code styling conventions should be followed:

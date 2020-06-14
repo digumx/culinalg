@@ -37,3 +37,17 @@ void clg::copyCuData(const CuData& dst, const CuData& src, size_t count)
     // Check for error
     clg::wrapCudaError<clg::CopyFailedException>(err); 
 }
+
+void clg::CuData::reset()
+{
+    host_data = nullptr;
+    device_data = nullptr;
+    host_data_synced = true;
+}
+
+void clg::CuData::move_from(const CuData& src)
+{
+    host_data = other.host_data;
+    device_data = other.device_data;
+    host_data_synced = other.host_data_synced;
+}

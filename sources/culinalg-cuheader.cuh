@@ -36,6 +36,18 @@ namespace clg
         // */
         //std::queue<CudaEvent_t> reader_events;
         //CudaEvent_t writer_events;
+
+        /**
+         * Reset this CuData to a valid state referring to no data
+         */
+        void reset();
+        /**
+         * Move data from given CuData to this CuData. The result of this will leave both CuData
+         * objects pointing to the same data.
+         */
+        void move_from(const CuData& other);
+
+
     };
 
     /**
