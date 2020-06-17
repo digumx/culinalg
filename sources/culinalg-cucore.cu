@@ -51,3 +51,29 @@ void clg::CuData::move_from(const CuData& src)
     device_data = other.device_data;
     host_data_synced = other.host_data_synced;
 }
+
+void clg::CuData::memsync_host(size_t size)
+{
+    // Early return
+    if(host_data_synced) return;
+
+    // Try copying
+    clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(host_data, device_data, size,
+                cudaMemcpyDeviceToHost));
+
+    // Set sync flags
+    host_data_synced = true;
+}
+
+void clg::CuData::memsync_device(size_t size)
+{
+    // Early return
+    if(!host_data_synced) return;
+
+    // Try copying
+    clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(device_data, host_data, size,
+                cudaMemcpyHostToDevice));
+
+    // Set sync flags
+    host_data_synced = false;
+}

@@ -11,7 +11,7 @@
 namespace clg
 {
     /**
-     * This exception occurs when a copy between two CuDatas failed.
+     * This exception occurs when a cuda memcpy fails.
      */
     class CopyFailedException : public std::runtime_error
     {

@@ -46,8 +46,18 @@ namespace clg
          * objects pointing to the same data.
          */
         void move_from(const CuData& other);
-
-
+        /**
+         * Synchronizes the memory segment starting at where this `CuData` refers to and extending for
+         * `size` bytes so that the host side memory holds the correct data. Strong exception
+         * guarantee.
+         */
+        void memsync_host(size_t size);
+        /**
+         * Synchronizes the memory segment starting at where this `CuData` refers to and extending for
+         * `size` bytes so that the device side memory holds the correct data. Strong exception
+         * guarantee.
+         */
+        void memsync_device(size_t size);
     };
 
     /**
