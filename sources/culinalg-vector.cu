@@ -3,6 +3,7 @@
  */
 
 #include<cassert>
+#include<stdexcept>
 
 #include<headers/culinalg-vector.hpp>
 #include<headers/culinalg-exceptions.hpp>
@@ -108,3 +109,21 @@ clg::Vector::operator=(Vector&& other)
     // Just move the data pointers in irepr_
     irepr_->move_from(*(other.irepr_));
 }
+
+float& clg::Vector::operator[](size_t index)
+{
+    // Check bounds
+    if(index < 0 || index >= dim_) throw std::out_of_range("Out of range access on vector");
+
+    // Synchronize memory
+    irepr_->memsync_host();
+
+    return ((float*)irepr_->host_data)[index];
+}
+
+
+/**
+ * Kernel to interpret the passed float* x, y as device addresses for two vectors of dimension dim
+ * represented as contagious arrays
+ * and stores the result in r, which is assumed to be 
+__global__ kern_vec_add()

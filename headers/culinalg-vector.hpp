@@ -51,6 +51,10 @@ namespace clg
              * Compound operator for vector addition. Strong exception guarantee.
              */
             Vector operator+=(const Vector& other);
+            /**
+             * Access an element of a vector as a float. Strong exception guarantee.
+             */
+            float& operator[](size_t index);
         
         private:
             // Must point to valid CuData at all times. The CuData should point to some data, unless

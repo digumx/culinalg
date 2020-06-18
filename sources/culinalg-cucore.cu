@@ -57,7 +57,7 @@ void clg::CuData::memsync_host(size_t size)
     // Early return
     if(host_data_synced) return;
 
-    // Try copying
+    // Try copying. If copy fails, treating source as correct seems safe
     clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(host_data, device_data, size,
                 cudaMemcpyDeviceToHost));
 
@@ -70,7 +70,7 @@ void clg::CuData::memsync_device(size_t size)
     // Early return
     if(!host_data_synced) return;
 
-    // Try copying
+    // Try copyin. If copy fails, treating source as correct seems safeg
     clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(device_data, host_data, size,
                 cudaMemcpyHostToDevice));
 
