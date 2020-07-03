@@ -4,9 +4,6 @@
 
 #include<cassert>
 #include<stdexcept>
-#ifdef DEBUG
-#include<iostream>
-#endif
 
 #include<headers/culinalg-vector.hpp>
 #include<headers/culinalg-exceptions.hpp>
@@ -27,9 +24,6 @@ void clg::Vector::alloc_irepr_throw_()
     irepr_->host_data = _h_data;
     irepr_->device_data = _d_data;
     
-#ifdef DEBUG
-    std::cout << "Allocated host " << _h_data << " device " << _d_data << std::endl;
-#endif
 }
 
 void clg::Vector::delloc_irepr_throw_()
@@ -43,16 +37,10 @@ void clg::Vector::delloc_irepr_throw_()
     if(_h_data) clg::wrapCudaError<clg::HostDellocationFailedException>(cudaFreeHost(_h_data));
     if(_d_data) clg::wrapCudaError<clg::DeviceDellocationFailedException>(cudaFree(_d_data));
 
-#ifdef DEBUG
-    std::cout << "Dellocated host " << _h_data << " device " << _d_data << std::endl;
-#endif
 }
 
 clg::Vector::Vector(size_t n, bool init) : dim_(n)
 {
-#ifdef DEBUG
-    std::cout << "Creating a new vector of size " << n << std::endl;
-#endif
     // Make new CuData
     irepr_ = new CuData();
 
@@ -66,10 +54,6 @@ clg::Vector::Vector(size_t n, bool init) : dim_(n)
 
 clg::Vector::~Vector()
 {
-#ifdef DEBUG
-    std::cout << "Deleting vector at host " << irepr_->host_data << " device " <<
-        irepr_->device_data << std::endl;
-#endif   
     // Free data
     if(irepr_->host_data)
         cudaFreeHost(irepr_->host_data);
@@ -82,9 +66,6 @@ clg::Vector::~Vector()
 
 clg::Vector::Vector(const clg::Vector& other) : dim_(other.dim_)
 {
- #ifdef DEBUG
-    std::cout << "Copy constructing new vector " << std::endl;
-#endif
    // Make new CuData
     irepr_ = new CuData();
     
@@ -97,9 +78,6 @@ clg::Vector::Vector(const clg::Vector& other) : dim_(other.dim_)
 
 clg::Vector::Vector(clg::Vector&& other) : dim_(other.dim_)
 {
-#ifdef DEBUG
-    std::cout << "Move constructing new vector " << std::endl;
-#endif
 
     // Make new CuData
     irepr_ = new CuData();
@@ -113,9 +91,6 @@ clg::Vector::Vector(clg::Vector&& other) : dim_(other.dim_)
 
 clg::Vector& clg::Vector::operator=(const clg::Vector& other)
 {
- #ifdef DEBUG
-    std::cout << "Copy assigning new vector " << std::endl;
-#endif
    // Check dimensionality
     if(dim_ != other.dim_) throw clg::DimensionalityMismatchException(dim_, other.dim_);
 
@@ -131,9 +106,6 @@ clg::Vector& clg::Vector::operator=(const clg::Vector& other)
 
 clg::Vector& clg::Vector::operator=(clg::Vector&& other)
 {
- #ifdef DEBUG
-    std::cout << "Move assigniing vector " << std::endl;
-#endif
    // Check dimensionality
     if(dim_ != other.dim_) throw clg::DimensionalityMismatchException(dim_, other.dim_);
 
@@ -153,10 +125,7 @@ clg::Vector& clg::Vector::operator=(clg::Vector&& other)
 
 float& clg::Vector::operator[](size_t index)
 {
- #ifdef DEBUG
-    //std::cout << "Accessing Vector " << std::endl;
-#endif
-   // Check bounds
+    // Check bounds
     if(index >= dim_) throw std::out_of_range("Out of range access on vector");
 
     // Synchronize memory
@@ -177,16 +146,10 @@ __global__ void kern_vec_add_(float* x, float* y, float* r, size_t dim)
     size_t _strd = blockDim.x * gridDim.x;
     for(size_t _i = blockIdx.x * blockDim.x + threadIdx.x; _i < dim; _i += _strd)
         r[_i] = x[_i] + y[_i];
-#ifdef DEBUG
-    //printf("add kern\n");
-#endif
 }
 
 clg::Vector clg::operator+(const clg::Vector& x, const clg::Vector& y)
 {
-#ifdef DEBUG
-    std::cout << "Adding vectors " << std::endl;
-#endif
 
     // Check dimensionality
     if(x.dim_ != y.dim_) throw clg::DimensionalityMismatchException(x.dim_, y.dim_);

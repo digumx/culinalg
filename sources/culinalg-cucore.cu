@@ -2,9 +2,6 @@
  * Implements several functions declared in source/culinalg-cuheader.cuh
  */
 
-#ifdef DEBUG
-#include <iostream>
-#endif
 
 #include<sources/culinalg-cuheader.cuh>
 #include<headers/culinalg-exceptions.hpp>
@@ -55,11 +52,6 @@ void clg::CuData::memsync_host(size_t size)
     // Early return
     if(host_data_synced) return;
 
-#ifdef DEBUG
-    std::cout << "Syncing to host " << host_data << " from device " << device_data << " size " <<
-        size << std::endl;
-#endif
-
     // Try copying. If copy fails, treating source as correct seems safe
     clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(host_data, device_data, size,
                 cudaMemcpyDeviceToHost));
@@ -72,11 +64,6 @@ void clg::CuData::memsync_device(size_t size)
 {
     // Early return
     if(!host_data_synced) return;
-
-#ifdef DEBUG
-    std::cout << "Syncing from host " << host_data << " to device " << device_data << " size " <<
-        size << std::endl;
-#endif
 
     // Try copyin. If copy fails, treating source as correct seems safeg
     clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(device_data, host_data, size,

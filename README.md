@@ -3,13 +3,22 @@
 A CUDA linear algebra library written in C++. This is mainly a personal exploration of some parallel
 algorithms for common linear algebraic operations.
 
-## Build Flags
+## Building
 
-The following build flags may be set:
+To use this library, it is necessary to build against it for the target system of user using nvidia's 
+cuda compiler. To do so, write standard C++ code but save it as cuda files with a `.cu` extension
+into some directory we will call `<source-files>`, then on unix like systems run:
+
+```
+nvcc -I <culinalg-directory> -o <output-binary-name> <culinalg-directory>/sources/*.cu <source-files>
+```
+
+On windows, a similar command may be used on the console, or an IDE may be set up to work
+equivalently.
 
 ## Styling
 
-The following code styling conventions should be followed:
+The following code styling conventions are being followed:
 
 * Namespaces should be `lowercasewithnowordseperation`, and short if possible.
 * Classes, structs and types should be `CamelCaseWithNoWordSeperation`.
