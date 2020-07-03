@@ -6,8 +6,17 @@
 #ifndef CULINALG_HEADER_CUHEADER
 #define CULINALG_HEADER_CUHEADER
 
-#include<queue>
 #include<string>
+
+
+/**
+ * The number of threads in a thread block. The value 64 is motivated by the attempt to have two
+ * warps in a thread block. Any fewer, and the scheduler inside an SMP may potentially idle if only
+ * a single block is loaded. Any more, and systems with large number of SMPs may end up with SMPs
+ * with no load.
+ */
+#define CULINALG_BLOCK_SIZE 64
+
 
 namespace clg
 {
@@ -67,15 +76,21 @@ namespace clg
      * any exception guarantee, and is intended to simply be syntactic sugar for the often repeated
      * if-throw-get-message pattern for wrapping CudaErrors in exceptions.
      */
-    template<class E> inline void wrapCudaError(const CudaError_t& err);
+    template<class E> inline void wrapCudaError(const cudaError_t& err)
+    {
+        if(err != cudaSuccess)
+            throw E("CUDA Error: " + std::string(cudaGetErrorName(err)) + ": " +
+                    std::string(cudaGetErrorString(err)));
+    }
+
 
     /**
      * Copies data from the second CuData arguement into the first. Copies as many bytes as the 
      * third arguement. Throws CopyFailedException, either due to internal CUDA errors, or because 
-     * the CuDatas do not poin to any data. Both source and destination CuDatas remain valid, that 
+     * the CuDatas do not point to any data. Both source and destination CuDatas remain valid, that 
      * is, they continue to point to some date mirrored on host and device, but a failed copy may 
      * corrupt the data itself. This essentially provides strong exception guarantee with respect to
-     * CuData validity.
+     * validity of CuData invariants.
      */
     void copyCuData(const CuData& dst, const CuData& src, size_t count);
     

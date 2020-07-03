@@ -17,5 +17,5 @@ The following code styling conventions should be followed:
 * Global and static variables should be `Spine_Case_With_Capitilization_Of_First_Letter`.
 * Non member functions should be `camelCaseWithSmallStartingLetter`.
 * Public members and function arguements should be `spine_case`.
-* Private members should be `spine_case_ending_with_underscore_`.
+* Private members and filescope references should be `spine_case_ending_with_underscore_`.
 * Local variables should be `_spine_case_begining_with_underscore`.

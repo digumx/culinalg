@@ -10,7 +10,7 @@ namespace clg
     /*
      * Forward declaration of CuData
      */
-    template<class T> struct CuData;
+    class CuData;
 
     // TODO add double precision support
     /**
@@ -20,9 +20,10 @@ namespace clg
     {
         public:
             /**
-             * Construct a 0 vector of dimensionality n. Strong exception guarantee.
+             * Construct a vector of dimensionality n. If init is true, initialize vector to 0.
+             * Strong exception guarantee.
              */
-            Vector(size_t n);
+            Vector(size_t n, bool init = true);
             /**
              * Destruct a vector. Strong exception guarantee.
              */
@@ -38,11 +39,11 @@ namespace clg
             /**
              * Copy assignment operator. Strong exception guarantee.
              */
-            Vector operator=(const Vector& other);
+            Vector& operator=(const Vector& other);
             /**
              * Move assignment operator. Strong exception guarantee.
              */
-            Vector operator=(Vector&& other);
+            Vector& operator=(Vector&& other);
             /**
              * Friend function for vector addition.
              */
@@ -50,7 +51,7 @@ namespace clg
             /**
              * Compound operator for vector addition. Strong exception guarantee.
              */
-            Vector operator+=(const Vector& other);
+            Vector& operator+=(const Vector& other);
             /**
              * Access an element of a vector as a float. Strong exception guarantee.
              */
@@ -62,9 +63,8 @@ namespace clg
             CuData* irepr_;
             const size_t dim_;
 
-            // Attempt to allocate data in irepr_ if it does not point to any data. Throws exception
-            // on allocation failure. Strong exception guarantee. Assumes inviariants of CuData
-            // hold.
+            // Attempt to allocate data in irepr_ . Throws exceptio on allocation failure. Strong
+            // exception guarantee. Assumes inviariants of CuData hold.
             void alloc_irepr_throw_();
             // Attempt to delete all data in irepr_, throw exceptions on failure. Should not be used
             // in dtor. Strong exception guarantee.
@@ -73,7 +73,7 @@ namespace clg
     };
 
     /**
-     * Adds two vectors together. Friend to Vector. Strong exception guarantee.
+     * Adds two vectors together. Friend to Vector. Strong exception guarantee. 
      * @param x The left argument
      * @param y The right argument
      */

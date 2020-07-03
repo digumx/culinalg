@@ -2,14 +2,12 @@
  * Implements several functions declared in source/culinalg-cuheader.cuh
  */
 
-#include<sources/culinalg-cuheader.cuh>
+#ifdef DEBUG
+#include <iostream>
+#endif
 
-template<class E> inline void clg::wrapCudaError(const CudaError_t& err)
-{
-    if(err != cudaSuccess)
-        throw E("CUDA Error: " + std::string(cudaGetErrorName(err)) + ": " +
-                std::string(cudaGetErrorString(err)));
-}
+#include<sources/culinalg-cuheader.cuh>
+#include<headers/culinalg-exceptions.hpp>
 
 void clg::copyCuData(const CuData& dst, const CuData& src, size_t count)
 {
@@ -18,7 +16,7 @@ void clg::copyCuData(const CuData& dst, const CuData& src, size_t count)
         throw clg::CopyFailedException("CuData is invalid or points to no data");
 
     // Perform copy
-    CudaError_t err; 
+    cudaError_t err; 
     if(dst.host_data_synced)
     {
         if(src.host_data_synced)
@@ -47,15 +45,20 @@ void clg::CuData::reset()
 
 void clg::CuData::move_from(const CuData& src)
 {
-    host_data = other.host_data;
-    device_data = other.device_data;
-    host_data_synced = other.host_data_synced;
+    host_data = src.host_data;
+    device_data = src.device_data;
+    host_data_synced = src.host_data_synced;
 }
 
 void clg::CuData::memsync_host(size_t size)
 {
     // Early return
     if(host_data_synced) return;
+
+#ifdef DEBUG
+    std::cout << "Syncing to host " << host_data << " from device " << device_data << " size " <<
+        size << std::endl;
+#endif
 
     // Try copying. If copy fails, treating source as correct seems safe
     clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(host_data, device_data, size,
@@ -69,6 +72,11 @@ void clg::CuData::memsync_device(size_t size)
 {
     // Early return
     if(!host_data_synced) return;
+
+#ifdef DEBUG
+    std::cout << "Syncing from host " << host_data << " to device " << device_data << " size " <<
+        size << std::endl;
+#endif
 
     // Try copyin. If copy fails, treating source as correct seems safeg
     clg::wrapCudaError<clg::CopyFailedException>(cudaMemcpy(device_data, host_data, size,
