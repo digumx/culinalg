@@ -40,7 +40,7 @@ equivalently.
 
 ## Styling
 
-The following code styling conventions are being followed:
+The following code styling conventions are being followed for c, c++ and cuda code:
 
 * Namespaces should be `lowercasewithnowordseperation`, and short if possible.
 * Classes, structs and types should be `CamelCaseWithNoWordSeperation`.
@@ -50,3 +50,9 @@ The following code styling conventions are being followed:
 * Public members and function arguements should be `spine_case`.
 * Private members and filescope references should be `spine_case_ending_with_underscore_`.
 * Local variables should be `_spine_case_begining_with_underscore`.
+
+For CMake, the styling is as follows:
+
+* Non cache variables should be `spine_case`.
+* Cache variables should be `CamelCase`.
+* Interface variables should be `BLOCK_CASE`.
