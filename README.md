@@ -27,16 +27,28 @@ for(int i = 0; i < 1000; ++i)               // print out sum
 
 ## Building
 
-To use this library, it is necessary to build against it for the target system of user using nvidia's 
-cuda compiler. To do so, write standard C++ code but save it as cuda files with a `.cu` extension
-into some directory we will call `<source-files>`, then on unix like systems run:
+The recommended way to build this library is by bundling it into the user's project via CMake, as
+the API is still unstable. A standalone build is provided, however the build is not configured to
+perform any system wide installation. For build configuration options, see build options below.
+
+### Standalone
+
+To build the library in a standalone manner, simply configure with cmake and run make. Clone the
+repository, say to `<culinalg-root>`, create the root folder of the build tree, and on Linux simply
+do:
 
 ```
-nvcc -I <culinalg-directory> -o <output-binary-name> <culinalg-directory>/sources/*.cu <source-files>
+cmake ..
+make
 ```
 
-On windows, a similar command may be used on the console, or an IDE may be set up to work
-equivalently.
+Under the default configuration settings this will build culinalg and all examples provided.
+
+To use the 
+
+### Bundled
+
+This library can be bundled into any CMake project.
 
 ## Styling
 
@@ -54,5 +66,6 @@ The following code styling conventions are being followed for c, c++ and cuda co
 For CMake, the styling is as follows:
 
 * Non cache variables should be `spine_case`.
-* Cache variables should be `CamelCase`.
+* Cache variables should be `Camel_Spine_Case`.
+* Project names, target names etc should use `SpineCase`
 * Interface variables should be `BLOCK_CASE`.

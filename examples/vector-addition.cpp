@@ -1,6 +1,6 @@
-#include<headers/culinalg.hpp>
+#include <headers/culinalg.hpp>
 
-#include<iostream>
+#include <iostream>
 
 int main(int argc, char** argv)
 {

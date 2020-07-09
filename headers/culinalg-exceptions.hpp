@@ -5,6 +5,7 @@
 #ifndef CULINALG_HEADER_EXCEPTIONS
 #define CULINALG_HEADER_EXCEPTIONS
 
+#include <cstddef>
 #include <stdexcept>
 #include <string>
 

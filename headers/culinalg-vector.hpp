@@ -5,6 +5,8 @@
 #ifndef CULINALG_HEADER_VECTOR
 #define CULINALG_HEADER_VECTOR
 
+#include <cstddef>
+
 namespace clg
 {
     /*
