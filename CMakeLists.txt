@@ -15,15 +15,18 @@ project( CulinalgProject LANGUAGES CXX CUDA )
 
 # Generate binaries from ptx of the same version for each of these architectures. The architecture
 # numbers should point to both a valid virtual and a valid real architecture.
-set( Culinalg_GPU_Code_Generation_Architectures 35 50 53 60 61 62 70 72 75 
-    CACHE STRING "Semicolon seperated list of gpu real architectures for which to generate gpu code"
+set( Culinalg_Gpu_Binary_Architectures 35 50 53 60 61 62 70 72 75 
+    CACHE STRING "Semicolon seperated list of gpu real architectures for which to generate gpu \
+                  binary code"
+    )
+
+# Generate ptx but no binary codes for this architecture. This is so that the compiled binary is
+# guaranteed to be compatible with future gpu generations
+set( Culinalg_Gpu_Ptx_Architecture 80 CACHE STRING "Architecture for which to generate gpu ptx code"
     )
 
 # Link to cuda runtime statically or dynamically
 option( Culinalg_Static_Link_Cudart "Turn on to link to the cuda runtime statically" ON ) 
-
-# Build culinalg dynamically
-option( Culinalg_Build_Dynamic "Turn on to build culinalg into a dynamically linked library" ON )
 
 # Build examples or not ignored if not a standalone build, examples are not built
 option( Culinalg_Build_Examples "Turn on to build examples." ON )
@@ -44,7 +47,7 @@ set( culinalg_header_deps       ${CMAKE_CURRENT_SOURCE_DIR}/sources/culinalg-cuh
                                 ${CMAKE_CURRENT_SOURCE_DIR}/headers/culinalg-exceptions.hpp
                                 ${CMAKE_CURRENT_SOURCE_DIR}/headers/culinalg-vector.hpp 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/headers/culinalg.hpp )
-
+                              
 
 
 
@@ -55,9 +58,11 @@ set( culinalg_header_deps       ${CMAKE_CURRENT_SOURCE_DIR}/sources/culinalg-cuh
 # Generate string representing -gencode commands to pass to nvcc
 message( "Configuring gencode options to pass to cuda compiler. Assuming nvcc compatible cli." )
 set( gencode_lines "" )
-foreach( arch IN LISTS Culinalg_GPU_Code_Generation_Architectures )
+foreach( arch IN LISTS Culinalg_Gpu_Binary_Architectures )
     set( gencode_lines "${gencode_lines}-gencode arch=compute_${arch},code=sm_${arch} " )
 endforeach( arch )
+set( gencode_lines "${gencode_lines}-gencode \
+        arch=compute_${Culinalg_Gpu_Ptx_Architecture},code=compute_${Culinalg_Gpu_Ptx_Architecture " )
 message( "Using gencode options ${gencode_lines}" )
 
 
@@ -68,13 +73,8 @@ message( "Using gencode options ${gencode_lines}" )
 #
 
 # Culinalg library targets
-if( Culinalg_Build_Dynamic )
-    add_library( CulinalgTarget SHARED  ${culinalg_sources} 
-                                        ${culinalg_header_deps} )
-else()
-    add_library( CulinalgTarget STATIC  ${culinalg_sources} 
-                                        ${culinalg_header_deps} )
-endif()
+add_library( CulinalgTarget SHARED  ${culinalg_sources} 
+                                    ${culinalg_header_deps} )
 
 # Names for library targets
 set_target_properties( CulinalgTarget PROPERTIES OUTPUT_NAME culinalg )
@@ -89,7 +89,7 @@ set_target_properties( CulinalgTarget PROPERTIES
 
 # Linking CUDA runtime
 if( Culinalg_Static_Link_Cudart )
-    set_target_properties( CulinalgTarget PROPERTIES CUDA_RUNTIME_LIBRARY Shared )
+    set_target_properties( CulinalgTarget PROPERTIES CUDA_RUNTIME_LIBRARY Static )
 else()
     set_target_properties( CulinalgTarget PROPERTIES CUDA_RUNTIME_LIBRARY Shared )
 endif()
