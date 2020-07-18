@@ -1,23 +1,24 @@
 #include <headers/culinalg.hpp>
-
 #include <iostream>
+
+#define N 1<<20
 
 int main(int argc, char** argv)
 {
-    clg::Vector v1(10);
-    clg::Vector v2(10);
-    for(int i = 0; i < 10; i++)
+    clg::Vector v1(N);                                          // Define two vectors of size N
+    clg::Vector v2(N);
+    for(int i = 0; i < N; i++)                                  // Fill them
     {
         v1[i] = 1;
         v2[i] = 2;
     }
 
-    clg::Vector v3(10);
-    //for(int i = 0; i < 10; i++)
-    //    v3[i] = 5;
+    clg::Vector v3(N);                                          // Define another vector of size N
 
-    v3 = v1 + v2;
+    v3 = v1 + v2;                                               // Add and store the vectors
 
-    for(int i = 0; i < 10; i++)
-        std::cout << v3[i] << std::endl;
+    bool correct = true;
+    for(int i = 0; i < N; i++)                                  // Check if vectors are correct
+        correct &= v3[i] == 3;
+    std::cout << (correct ? "OK" : "Wrong") << std::endl;
 }

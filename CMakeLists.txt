@@ -15,14 +15,14 @@ project( CulinalgProject LANGUAGES CXX CUDA )
 
 # Generate binaries from ptx of the same version for each of these architectures. The architecture
 # numbers should point to both a valid virtual and a valid real architecture.
-set( Culinalg_Gpu_Binary_Architectures 35 50 53 60 61 62 70 72 75 
+set( Culinalg_Gpu_Binary_Architectures 35 50 53 60 61 62 70 72 
     CACHE STRING "Semicolon seperated list of gpu real architectures for which to generate gpu \
                   binary code"
     )
 
 # Generate ptx but no binary codes for this architecture. This is so that the compiled binary is
 # guaranteed to be compatible with future gpu generations
-set( Culinalg_Gpu_Ptx_Architecture 80 CACHE STRING "Architecture for which to generate gpu ptx code"
+set( Culinalg_Gpu_Ptx_Architecture 75 CACHE STRING "Architecture for which to generate gpu ptx code"
     )
 
 # Link to cuda runtime statically or dynamically
@@ -62,7 +62,7 @@ foreach( arch IN LISTS Culinalg_Gpu_Binary_Architectures )
     set( gencode_lines "${gencode_lines}-gencode arch=compute_${arch},code=sm_${arch} " )
 endforeach( arch )
 set( gencode_lines "${gencode_lines}-gencode \
-        arch=compute_${Culinalg_Gpu_Ptx_Architecture},code=compute_${Culinalg_Gpu_Ptx_Architecture " )
+        arch=compute_${Culinalg_Gpu_Ptx_Architecture},code=compute_${Culinalg_Gpu_Ptx_Architecture} " )
 message( "Using gencode options ${gencode_lines}" )
 
 
