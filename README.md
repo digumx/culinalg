@@ -38,6 +38,9 @@ The recommended way to build this library is by bundling it into the user's proj
 the API is still unstable. A standalone build is provided, however the build does not perform any
 system wide installation. For build configuration options, see build options below.
 
+The buildsystem was tested on Linux for generating unix makefiles, however, it should theoretically
+work on any platform supported by CMake.
+
 ### Standalone
 
 To build the library in a standalone manner, simply configure with cmake and run make. Clone the

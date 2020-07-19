@@ -13,23 +13,37 @@ project( CulinalgProject LANGUAGES CXX CUDA )
 # CONFIGURABLE SETTINGS
 #
 
+# Define the build type as a cache entry
+if( NOT CMAKE_BUILD_TYPE )
+    set( CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build. May be Debug or Release" FORCE )
+    set_property( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release" "Debug" )
+endif()
+
 # Generate binaries from ptx of the same version for each of these architectures. The architecture
 # numbers should point to both a valid virtual and a valid real architecture.
-set( Culinalg_Gpu_Binary_Architectures 35 50 53 60 61 62 70 72 
-    CACHE STRING "Semicolon seperated list of gpu real architectures for which to generate gpu \
-                  binary code"
-    )
+if( NOT Culinalg_Gpu_Binary_Architectures )
+    set( Culinalg_Gpu_Binary_Architectures 35 50 53 60 61 62 70 72 
+        CACHE STRING "Semicolon seperated list of gpu real architectures for which to generate gpu \
+                      binary code"
+        )
+endif()
 
 # Generate ptx but no binary codes for this architecture. This is so that the compiled binary is
 # guaranteed to be compatible with future gpu generations
-set( Culinalg_Gpu_Ptx_Architecture 75 CACHE STRING "Architecture for which to generate gpu ptx code"
-    )
+if( NOT Culinalg_Gpu_Ptx_Architecture )
+    set( Culinalg_Gpu_Ptx_Architecture 75 CACHE STRING "Architecture for which to generate gpu ptx code"
+        )
+endif()
 
 # Link to cuda runtime statically or dynamically
-option( Culinalg_Static_Link_Cudart "Turn on to link to the cuda runtime statically" ON ) 
+if( NOT Culinalg_Static_Link_Cudart )
+    option( Culinalg_Static_Link_Cudart "Turn on to link to the cuda runtime statically" ON )
+endif()
 
 # Build examples or not ignored if not a standalone build, examples are not built
-option( Culinalg_Build_Examples "Turn on to build examples." ON )
+if( NOT Culinalg_Build_Examples )
+    option( Culinalg_Build_Examples "Turn on to build examples." ON )
+endif()
 
 
 
@@ -72,12 +86,19 @@ message( "Using gencode options ${gencode_lines}" )
 # CULINALG BUILD CONFIG
 #
 
+# Build configurations
+set( CMAKE_CONFIGURATION_TYPES "Release" "Debug" )
+
 # Culinalg library targets
 add_library( CulinalgTarget SHARED  ${culinalg_sources} 
                                     ${culinalg_header_deps} )
 
 # Names for library targets
 set_target_properties( CulinalgTarget PROPERTIES OUTPUT_NAME culinalg )
+
+# Defines
+target_compile_definitions( CulinalgTarget
+        PRIVATE "$<$<CONFIG:Debug>:DEBUG>" )
 
 # Include directoreis for library targets
 target_include_directories( CulinalgTarget PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )

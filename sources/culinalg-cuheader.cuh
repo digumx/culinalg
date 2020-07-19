@@ -1,7 +1,7 @@
 /**
- * A common header containing forward declarations and type definitions dependent on the cuda
- * runtime
- */
+* A common header containing forward declarations and type definitions dependent on the cuda
+* runtime
+*/
 
 #ifndef CULINALG_HEADER_CUHEADER
 #define CULINALG_HEADER_CUHEADER
