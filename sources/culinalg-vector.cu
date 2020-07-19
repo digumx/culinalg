@@ -2,13 +2,16 @@
  * Implements vector
  */
 
-#include<cassert>
-#include<stdexcept>
+#include <cassert>
+#include <stdexcept>
+#ifdef DEBUG
+#include <iostream>
+#endif
 
-#include<headers/culinalg-vector.hpp>
-#include<headers/culinalg-exceptions.hpp>
+#include <headers/culinalg-vector.hpp>
+#include <headers/culinalg-exceptions.hpp>
 
-#include<sources/culinalg-cuheader.cuh>
+#include <sources/culinalg-cuheader.cuh>
 
 void clg::Vector::alloc_irepr_throw_()
 {
@@ -41,6 +44,10 @@ void clg::Vector::delloc_irepr_throw_()
 
 clg::Vector::Vector(size_t n, bool init) : dim_(n)
 {
+#ifdef DEBUG
+    std::cout << "Making new vector" << std::endl;
+#endif
+
     // Make new CuData
     irepr_ = new CuData();
 
@@ -167,6 +174,10 @@ clg::Vector clg::operator+(const clg::Vector& x, const clg::Vector& y)
     int _device;
     cudaGetDevice(&_device);
     cudaDeviceGetAttribute(&_grid_size, cudaDevAttrMultiProcessorCount, _device);
+#ifdef DEBUG
+    std::cout << "Launching kern_vec_add with grid size " << _grid_size << " block size " <<
+        CULINALG_BLOCK_SIZE << std::endl;
+#endif
     kern_vec_add_<<<_grid_size, CULINALG_BLOCK_SIZE>>>(
         (float*)x.irepr_->device_data, (float*)y.irepr_->device_data,
         (float*)_vec.irepr_->device_data, x.dim_);
