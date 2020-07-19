@@ -13,9 +13,18 @@
  * The number of threads in a thread block. The value 64 is motivated by the attempt to have two
  * warps in a thread block. Any fewer, and the scheduler inside an SMP may potentially idle if only
  * a single block is loaded. Any more, and systems with large number of SMPs may end up with SMPs
- * with no load.
+ * with no load. Optimal decided from testing on a 1660Ti Mobile.
  */
 #define CULINALG_BLOCK_SIZE 64
+
+/*
+ * The number of thread blocks in a grid. This should be a large enough number so that the maximum
+ * theoretical per SM occupancy may be practically achieve. If this is too small, there will not be
+ * enough warps from thread blocks simultaneously executing on the SMs to hide latencies. The
+ * current value was determined by testing on a 1660Ti mobile, the value chosen is 4 times the point
+ * where increasing the grid size produces no difference in kernel execution times.
+ */
+#define CULINALG_GRID_SIZE 4096
 
 
 namespace clg

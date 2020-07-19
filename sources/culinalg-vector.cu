@@ -171,14 +171,13 @@ clg::Vector clg::operator+(const clg::Vector& x, const clg::Vector& y)
 
     // Execute kernel, grid size is chosen so that there are as many blocks as multiprocessors.
     int _grid_size;
-    int _device;
-    cudaGetDevice(&_device);
-    cudaDeviceGetAttribute(&_grid_size, cudaDevAttrMultiProcessorCount, _device);
+    int _block_size;
+    cudaOccupancyMaxPotentialBlockSize(&_grid_size, &_block_size, kern_vec_add_, 0, 0);
 #ifdef DEBUG
     std::cout << "Launching kern_vec_add with grid size " << _grid_size << " block size " <<
-        CULINALG_BLOCK_SIZE << std::endl;
+        _block_size << std::endl;
 #endif
-    kern_vec_add_<<<_grid_size, CULINALG_BLOCK_SIZE>>>(
+    kern_vec_add_<<<_grid_size, _block_size>>>(
         (float*)x.irepr_->device_data, (float*)y.irepr_->device_data,
         (float*)_vec.irepr_->device_data, x.dim_);
     clg::wrapCudaError<clg::KernelLaunchFailedException>(cudaGetLastError());
